@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const ApiError = require("./app/api-eror");
 const app = express();
 const contactsRouter = require("./app/routes/contact.route");
 app.use(cors());
@@ -12,3 +12,13 @@ app.get("/", (req, res)=>{
 });
 app.use("/api/contacts", contactsRouter);
 module.exports = app;
+
+app.use((req, res, next)=>{
+    return next(new ApiError(404, "Resource not found"));
+});
+
+app.use((err,req,res,next)=>{
+    return res.status(error.statusCode || 500).json({
+        message: error.message || "Internal Server Error",
+    });
+});
